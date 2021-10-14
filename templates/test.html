@@ -1,0 +1,249 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop Element | CodingNepal</title>
+</head>
+<link rel="stylesheet" href="assets/static/css/ticker_page.css" />
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #footer{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 0;
+        text-align: center;
+        background-color: white;
+    }
+
+    #footer table {
+        margin: 0 auto;
+    }
+
+    #footer form {
+        width: 100%;
+        padding: 0.1em;
+    }
+    #footer form table tr {
+        width: 100%;
+        text-align: justify;
+    }
+    #footer form table th {
+        alignment: center;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 150px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    @media all and (min-width:1025px) {
+        body{
+            margin: auto 600px;
+        }
+    }
+
+    @media all and (min-width:1025px) {
+        #footer{
+            padding-left: 600px;
+            padding-right: 600px;
+        }
+    }
+</style>
+
+<div class="" >
+    <img src="assets/static/img/BrandMark_top.png" style="margin-left:25%; width: 50%; margin-top: 3%;">
+</div>
+
+<body>
+
+
+<div style="padding: 0.1em;font-size: 22px;font-weight: bold;margin-top: 10px;">
+    <label><strong>{{playlist_name}}</strong> 문구설정</label>
+</div>
+
+<form id="ticker_form" name="ticker_form" onsubmit="return form_submit()" action="/ticker_setting" method="post" style="border: 1px solid black;padding: 10px;border-radius: 10px;margin-bottom: 100px;">
+
+	<table>
+        <tr type="hidden">
+            <td><input type="hidden" name="playlist_name" value="{{playlist_name}}"/></td>
+        </tr>
+        <table style="width: 100%;border: 1px solid black; padding-bottom: 15px;border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid black;">
+                <th style="text-align: center;background: aliceblue;padding: 10px;">문구 내용1<input type="checkbox" name="check1" id="check1" value="true" checked style="position: absolute;"></th>
+            </tr>
+            <tr>
+                <td style="padding: 10px;border-right: 1px solid black;" ><label>
+					<textarea name="msg1" style="width:100%; height: 40px;font: inherit;border: none;resize: none;" onkeypress="fc_chk2();" rows="1">{{ticker_info.msg1}}</textarea>
+                </label></td>
+            </tr>
+        </table>
+        <table style="width: 100%;border: 1px solid black; padding-bottom: 15px;margin-top: 10px;border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid black;">
+                <th style="text-align: center; background: aliceblue;padding: 10px;">문구 내용2<input type="checkbox" name="check2" id="check2" value="true" checked style="position: absolute;"></th>
+            </tr>
+            <tr>
+                <td style="padding: 10px;" ><label>
+					<textarea name="msg2" style="width:100%; height: 40px;font: inherit;border: none;resize: none;" onkeypress="fc_chk2();" rows="1">{{ticker_info.msg2}}</textarea>
+                </label></td>
+            </tr>
+        </table>
+        <table style="width: 100%;border: 1px solid black; padding-bottom: 15px;margin-top: 10px;border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid black;">
+                <th style="text-align: center; background: aliceblue;padding: 10px;">문구 내용3<input type="checkbox" name="check3" id="check3" value="true" checked style="position: absolute;"></th>
+            </tr>
+            <tr>
+                <td style="padding: 10px;" ><label>
+					<textarea name="msg3" style="width:100%; height: 40px;font: inherit;border: none;resize: none;" onkeypress="fc_chk2();" rows="1">{{ticker_info.msg3}}</textarea>
+                </label></td>
+            </tr>
+		</table>
+        <table style="width: 100%;border: 1px solid black; padding-bottom: 15px;margin-top: 10px;border-collapse: collapse;">
+            <tr style="background: aliceblue;border-bottom: 1px solid black;">
+                <th style="width: 81%;text-align: center;padding: 10px;" colspan="5">색상</th>
+            </tr>
+            <tr style="font-weight: bold;height: 53px;">
+                <input type="hidden" id="selected_color" value="{{ticker_info.color}}">
+                <td style="text-align: center;">
+                    <label><input class="radio_button" type="radio" value="black" name="color" checked>검정</label>
+                </td>
+                <td style="text-align: center;">
+                    <label><input class="radio_button" type="radio" value="white" name="color">흰색</label>
+                </td>
+                <td style="text-align: center;">
+                    <label><input class="radio_button" type="radio" value="red" name="color">빨강</label>
+                </td>
+                <td style="text-align: center;">
+                    <label><input class="radio_button" type="radio" value="green" name="color">초록</label>
+                </td>
+                <td style="text-align: center;">
+                    <label><input class="radio_button" type="radio" value="blue" name="color">파랑</label>
+                </td>
+            </tr>
+        </table>
+
+        <table style="width: 100%;border: 1px solid black; padding: 10px;margin-top: 10px;border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid black;background: aliceblue;">
+                <th style="text-align: center;width: 70px;padding: 10px;border-right: 1px solid black;">크기</th>
+                <th style="text-align: center;font-weight: bold; padding: 10px;border-bottom: 1px solid black;" colspan="3">문구속도</th>
+            </tr>
+            <tr style="font-weight: bold;height: 30px;">
+                <td style="padding: 10px;border-right: 1px solid black;width: 70px"><label>
+                    <input type="text" name="fontsize" style="width: 96%; border: none;text-align: center;font-size: 16px;" value="{{ticker_info.fontsize}}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength='2'>
+                </label></td>
+                <input type="hidden" id="selected_speed" value="{{ticker_info.speed}}">
+                <td style="text-align: center;height: 53px;">
+                    <label><input class="speed" type="radio" value="1" name="speed" checked>느림</label>
+                </td>
+                <td style="text-align: center;">
+                    <label><input class="speed" type="radio" value="2" name="speed">보통</label>
+                </td>
+                <td style="text-align: center;">
+                    <label><input class="speed" type="radio" value="3" name="speed">빠름</label>
+                </td>
+            </tr>
+        </table>
+    </table>
+</form>
+
+</body>
+
+<footer id="footer">
+
+    <form id="play_and_stop_status_footer" method="post" action="/playlist_status" name="footer_form" style="display: block;">
+        <table style="width: 100%;">
+            <tr style="height: 60px;vertical-align: middle;">
+                <th onclick="get_ticker_form()" id="play_or_stop_name_tag" style="border-radius: 10px;"><img src="assets/static/img/play_32px.png"><span style="vertical-align: super;margin-left: 10px;">저장</span></th>
+                <th style="width: 2px;border: none;"></th>
+                <th onclick="window.history.back()" style="border-radius: 10px;"><img src="assets/static/img/remove_32px.png"><span style="vertical-align: super;margin-left: 10px;">취소</span></th>
+            </tr>
+        </table>
+    </form>
+
+</footer>
+
+<script>
+
+    let radios = document.getElementsByClassName("radio_button");
+    let color = document.getElementById("selected_color").value;
+    for(let i=0; i<radios.length; i++){
+        if(radios[i].value.startsWith(color)){
+            document.getElementsByClassName("radio_button")[i].checked = "true";
+            console.log("cheked")
+        }
+    }
+
+    let speeds = document.getElementsByClassName("speed");
+    let selected_color = document.getElementById("selected_speed").value;
+    for(let i=0; i<speeds.length; i++){
+        if(speeds[i].value.startsWith(selected_color)){
+            document.getElementsByClassName("speed")[i].checked = "true";
+            console.log("cheked")
+        }
+    }
+
+
+    function get_ticker_form(){
+        let form = document.getElementById("ticker_form");
+        if(!form.check1.checked&&!form.check2.checked&&!form.check3.checked){
+            alert("셋 중 하나의 문구사용은 필수입니다.")
+            return false;
+        }
+        if(!form.msg1.value&&form.check1.checked){
+            alert("문구 내용1을 입력해주세요.");
+            form.msg1.focus();
+            return false;
+        }
+        else if(!form.check1.checked&&form.check2.checked&&!form.msg2.value){
+            alert("문구 내용2을 입력해주세요.");
+            form.msg2.focus();
+            return false;
+        }
+        else if(!form.check1.checked&&!form.check2.checked&&form.check3.checked&&!form.msg3.value){
+            alert("문구 내용3을 입력해주세요.");
+            form.msg3.focus();
+            return false;
+        }else{
+            if(!form.fontsize.value){
+                alert("fontsize를 입력해주세요.");
+                return false;
+            }
+            if(!form.check1.checked){
+                form.msg1.value = "";
+            }
+            if(!form.check2.checked){
+                form.msg2.value = "";
+            }
+            if(!form.check3.checked){
+                form.msg3.value = "";
+            }
+            let save = confirm("저장하시겠습니까?");
+            if(save){
+                form.submit();
+            }else{
+                return false;
+            }
+        }
+    }
+	
+/*
+' ------------------------------------------------------------------
+' Function    : fc_chk2()
+' Description : Enter키를 못치게한다.
+' Argument    :
+' Return      :
+' ------------------------------------------------------------------
+*/
+function fc_chk2()
+{
+	if(event.keyCode == 13)
+		event.returnValue=false;
+}
+</script>
+
+</html>

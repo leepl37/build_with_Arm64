@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>: :ITRO SIGNAGE: :</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Tony Lee" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <!-- user-scalable 을 사용하지 않는 디바이스를 위해, maximun-scale/minimum-scale 설정을 하는 것입니다-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- CSS Reset(1), 아이콘 폰트, 웹페이지 사용폰트, main.css -->
+    <link rel="stylesheet" href="assets/static/css/nomalize.css" />
+    <link rel="stylesheet" href="assets/static/css/main.css" />
+
+</head>
+
+<style>
+    .register-td_id{
+        background-image: url("assets/static/img/profile_16.png");
+        background-position: 5px center;
+        background-repeat: no-repeat;
+    }
+
+    .register-td_pass {
+        background-image: url("assets/static/img/lock_16.png");
+        background-position: 5px center;
+        background-repeat: no-repeat;
+        background-repeat: no-repeat;
+    }
+
+</style>
+
+<body>
+
+<script>
+    // let err = "{{err}}";
+    // if (err.startsWith("none")) {
+    //     console.log("hey")
+    // }else{
+    //     alert(err)
+    // }
+
+    function check_login_m() {
+        if(login_form.name.value == "") {
+            alert("ID를 입력해주세요.");
+            login_form.name.focus();
+            return false;
+        }else if(login_form.pass.value == ""){
+            alert("비밀번호를 확인해주세요.");
+            login_form.pass.focus();
+            return false;
+        }else {
+            return true;
+        }
+    }
+</script>
+
+<div class="login_img">
+    <img src="assets/static/img/BrandMark_top.png" style="margin-top: 65%; max-width: 100%; height: auto;">
+</div>
+
+
+<form class = "register-table_form_m" name="login_form" onsubmit="return check_login_m()" action="" method="post">
+    <table class="register-table_m">
+
+        <tr>
+            <td><input style="box-sizing: border-box" class="register-td_id" type="text" name="name"  placeholder="아이디"></td>
+        </tr>
+        <tr>
+            <td><input class="register-td_pass" type="password" name="pass"  placeholder="비밀번호"></td>
+        </tr>
+        <tr>
+            <td class="register-button_m_td" colspan="2"><button class="register-button_m" type="submit">로그인</button></td>
+        </tr>
+    </table>
+</form>
+
+<div class="login_img_bottom">
+    ©ITRO 2020 All Right Reserved
+</div>
+
+</body>
+
+</html>

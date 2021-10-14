@@ -1,0 +1,403 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop Element | CodingNepal</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <!-- user-scalable 을 사용하지 않는 디바이스를 위해, maximun-scale/minimum-scale 설정을 하는 것입니다-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- CSS Reset(1), 아이콘 폰트, 웹페이지 사용폰트, main.css -->
+<!--    <link rel="stylesheet" href="assets/static/css/main.css" />-->
+<!--    <link rel="stylesheet" href="assets/static/css/create_page.css" />-->
+    <link rel="stylesheet" href="assets/static/css/drag_and_drop.css" />
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #footer{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 0;
+        text-align: center;
+        background-color: white;
+    }
+
+    #footer table {
+        margin: 0 auto;
+    }
+
+    #footer form {
+        width: 100%;
+        padding: 0.1em;
+    }
+    #footer form table tr {
+        width: 100%;
+        text-align: justify;
+    }
+    #footer form table th {
+        alignment: center;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 150px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    @media all and (min-width:1025px) {
+        body{
+            margin: auto 600px;
+        }
+    }
+
+    @media all and (min-width:1025px) {
+        #footer{
+            padding-left: 600px;
+            padding-right: 600px;
+        }
+    }
+    .file_name_vertical {
+        vertical-align: super;
+    }
+
+    .item{
+        border-bottom: 1px solid #d3d3d3;
+        height: 35px;
+        vertical-align: super;
+
+        border-collapse: collapse;
+
+    }
+    .item02{
+        vertical-align: super;
+        border-bottom: 1px solid #d3d3d3;
+        height: 35px;
+    }
+    .outline{
+        /*border: 1px solid black;*/
+        /*border-radius: 5%;*/
+    }
+    .count_label {
+    }
+    .count_div {
+        display: inline-block;
+        text-align: right;
+        float: right;
+        width: 30%;
+        margin-right: 2%;
+    }
+    .count_input{
+        text-align: center;
+        border: none;
+        width: 20%;
+    }
+
+    .count_button {
+        font-size: 20px;
+    }
+</style>
+
+
+
+<div class="">
+    <img src="assets/static/img/BrandMark_top.png" style="margin-left:25%; width: 50%; margin-top: 1.5%;">
+</div>
+<br>
+<body>
+
+    <div style="width: 96%; margin: 0 auto;">
+        <label style="font-size: 20px; letter-spacing: 1px;"><strong>{{playlist_name}}</strong>'s playlist</label>
+    </div>
+    <br>
+    <form id="playlist_form" action="/edit_playlist" method="post" style="margin:0">
+        <input type="hidden" name="playlist" value="">
+        <input type="hidden" name="playlist_name" value="{{playlist_name}}">
+        <input type="hidden" name="durationlist" value="">
+    </form>
+    <div class="outline" id="outline" style="width: 96%; height: 30%; margin: 0 auto; overflow-y: scroll; border:1px solid black; border-radius: 10px; padding: 5px 0 0 5px;">
+            <div class="item" style="display: block" id="hidden_list" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+                플레이리스트가 비어있습니다.
+            </div>
+
+            {% for p in playlist %}
+                {% if p %}
+            <div class="item" draggable="true" id='play{{loop.index}}:{{p.filename}}' ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+            <span id="" class="file_name_vertical" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+                {{ p.filename }}
+            </span>
+            {% if p.isvideo %}
+            {% else %}
+            <div class="count_div">
+            <label style="" class="count_label">
+                <input type="button" class="count_button" onclick=plus('duration{{loop.index}}:{{p.filename}}') value='+'/><input class="count_input" type="text" readonly value={{p.duration}} id='duration{{loop.index}}:{{p.filename}}' name="count"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="3" min="0"><input type="button" class="count_button" onclick=minus('duration{{loop.index}}:{{p.filename}}') value='-'/>
+            </label>
+            </div>
+            {% endif %}
+        </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    <br>
+    <div style="width: 96%; margin: 0 auto;">
+        <label style="font-size: 20px; letter-spacing: 1px;">파일목록</label>
+    </div>
+    <br>
+    <div style="height: 33%; border: 1px solid black; overflow-y: scroll; width: 96%; margin: 0 auto; border-radius: 10px; padding: 5px 0 0 5px; ">
+    {% for file in files %}
+    <div class="item02" draggable="true" id='file{{loop.index}}:{{file.filename}}' ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+        <input type="hidden" id='file{{loop.index}}:{{file.filename}}check' value="{{file.type}}">
+        <span class="file_name_vertical">{{file.filename}}</span>
+    </div>
+    {% endfor %}
+    </div>
+
+</body>
+<br>
+<footer id="footer" >
+
+    <form id="play_and_stop_status_footer" method="post" action="/playlist_status" name="footer_form" style="display: block;">
+        <table style="width: 100%;">
+            <tr style="height: 60px;vertical-align: middle;">
+                <th onclick="get_list_of_playlist()" id="play_or_stop_name_tag" style="border-radius: 10px;"><img src="assets/static/img/play_32px.png"><span style="vertical-align: super;margin-left: 10px;">저장</span></th>
+                <th style="width: 2px;border: none;"></th>
+                <th onclick="window.history.back()" style="border-radius: 10px;"><img src="assets/static/img/remove_32px.png"><span style="vertical-align: super;margin-left: 10px;">취소</span></th>
+            </tr>
+        </table>
+    </form>
+
+</footer>
+
+
+<script>
+
+
+    let digit = document.getElementsByClassName("item").length;
+    if(digit==1) {
+        document.getElementById("hidden_list").style.display = "block";
+    }else{
+        document.getElementById("hidden_list").style.display = "none";
+    }
+
+
+    function get_list_of_playlist() {
+        let file_name_list = "";
+        let duration_list = "";
+
+        let file_name ="";
+        let duration = "";
+        let items = document.getElementsByClassName("item");
+        for (let i = 1; i < items.length; i++) {
+            let childNodes = items[i].childNodes;
+            console.log("name" + items[i].innerText);
+            file_name = items[i].innerText + "|";
+            duration = "f"+"|";
+            for (let k = 0; k < childNodes.length; k++) {
+                if (childNodes[k].nodeName.startsWith("DIV")) {
+                    let childNodes1 = childNodes[k].childNodes;
+                    for (let f = 0; f < childNodes1.length; f++) {
+                        if (childNodes1[f].nodeName.startsWith("LABEL")) {
+                            let childNodes2 = childNodes1[f].childNodes;
+                            for (let e = 0; e < childNodes2.length; e++) {
+                                if (childNodes2[e].nodeName.startsWith("INPUT")) {
+                                    if (childNodes2[e].value.startsWith("+") || childNodes2[e].value.startsWith("-")) {
+                                    } else {
+                                        console.log(childNodes2[e].value)
+                                        duration = childNodes2[e].value + "|";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            file_name_list += file_name;
+            duration_list += duration;
+            console.log("file_name_list:" + file_name_list);
+            console.log("duration_list:" + duration_list);
+        }
+        let form = document.getElementById("playlist_form");
+        form.playlist.value = file_name_list;
+        form.durationlist.value = duration_list;
+        let check = confirm("저장하시겠습니까?");
+        if(check){
+            form.submit()
+        }else{
+
+        }
+    }
+
+    function plus(id){
+            let file = document.getElementById(id);
+            file.value = parseInt(file.value) + 1;
+    }
+    function minus(id){
+        let file = document.getElementById(id);
+        if(file.value==0){
+
+        }else{
+            file.value = parseInt(file.value) - 1;
+        }
+
+    }
+
+    function is_video(id) {
+        let check = document.getElementById(id+"check");
+        console.log("is_video: "+check.value)
+        return check.value
+    }
+
+    function append_label(nodeCopy, bool, count_id) {
+        if(bool.startsWith("false")) {
+            let newDiv = document.createElement("div");
+            newDiv.className = "count_div";
+            // newDiv.style.float = "right";
+            let newlabel = document.createElement("label");
+            newlabel.className = "count_label";
+            let input_1 = document.createElement("input");
+            input_1.setAttribute('type', 'button');
+            input_1.setAttribute('value', '+');
+            input_1.className = "count_button"
+            input_1.onclick = function () {
+                plus(count_id)
+            };
+            let input_2 = document.createElement("input");
+            input_2.setAttribute('type', 'text');
+            input_2.value = "5";
+            input_2.className = "count_input";
+            input_2.readOnly = true;
+            input_2.id = count_id;
+            input_2.oninput ="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+            input_2.maxLength = 3;
+            input_2.min = "0";
+            let input_3 = document.createElement("input");
+            input_3.setAttribute('type', 'button');
+            input_3.setAttribute('value', '-');
+            input_3.className = "count_button"
+            input_3.onclick = function () {
+                minus(count_id)
+            };
+            newlabel.appendChild(input_1);
+            newlabel.appendChild(input_2);
+            newlabel.appendChild(input_3);
+            newDiv.appendChild(newlabel)
+            nodeCopy.appendChild(newDiv);
+        }
+    }
+
+    function dragstart_handler(ev) {
+        ev.target.style.opacity = "5;"
+        ev.target.style.color = "black;"
+        console.log("dragStart");
+        ev.dataTransfer.setData("text", ev.target.id);
+        console.log("start:"+ ev)
+        console.log("start_target_id:"+ ev.target.id)
+        ev.effectAllowed = "move";
+
+    }
+
+    function dragend_handler(ev) {
+        console.log("dragEnd");
+        // ev.target.style.border = "solid black";
+        console.log("dragend:"+ ev)
+        ev.dataTransfer.clearData();
+    }
+
+    function drop_handler(ev) {
+        let items = document.getElementsByClassName("item");
+        let lastdigit = items.length;
+        console.log("========="+lastdigit)
+
+        digit = document.getElementsByClassName("item").length;
+        console.log("ev_target_id:" + ev.target.id);
+        console.log("Drop");
+        ev.preventDefault();
+        let id = ev.dataTransfer.getData("text");
+        let innerHTML = document.getElementById(id).innerHTML;
+        let innerSpan = document.getElementById(id).span;
+        console.log("innerSpan" + innerSpan)
+        console.log("innerHTML" + innerHTML)
+        console.log("start_id:" + id)
+
+        //add
+        if (id.startsWith("file")&&ev.target.id.startsWith("play")) {
+            let return_isvideo = is_video(id);
+            let nodeCopy = document.getElementById(id).cloneNode(true);
+            let name = id.split(':');
+            console.log("file_name:" + name[1]);
+
+            console.log("last_digit:" + lastdigit);
+            let new_id = "play" + lastdigit +':'+ name[1];
+            let count_id = "duration" + lastdigit +':'+ name[1];
+            let span_id = lastdigit + ':' + name[1];
+            console.log("new_id:"+new_id)
+            nodeCopy.id = new_id;
+            nodeCopy.className = "item";
+            ev.target.after(nodeCopy);
+            nodeCopy.innerHTML = innerHTML;
+            append_label(nodeCopy, return_isvideo, count_id);
+
+        }
+        //edit
+        if (id.startsWith("play")&&ev.target.id.startsWith("play")) {
+            ev.target.after(document.getElementById(id));
+            document.getElementById(id).innerHTML = innerHTML;
+        }
+        //delete
+        if (id.startsWith("play")&&ev.target.id.startsWith("file")) {
+            document.getElementById(id).remove();
+            let digit = document.getElementsByClassName("item").length;
+
+            if(digit==1){
+                document.getElementById("hidden_list").style.display = "block";
+                console.log("0출력")
+            }
+        }
+        if (id.startsWith("file")&&ev.target.id.startsWith("hidden_list")) {
+            let return_isvideo = is_video(id);
+            let nodeCopy = document.getElementById(id).cloneNode(true);
+            let name = id.split(':');
+            console.log("file_name:" + name[1]);
+            let items = document.getElementsByClassName("item");
+            let lastdigit = items.length;
+            console.log("last_digit:" + lastdigit);
+            let new_id = "play" + lastdigit +':'+ name[1];
+            let count_id = "duration" + lastdigit +':'+ name[1];
+            console.log("new_id:"+new_id)
+            nodeCopy.id = new_id;
+            nodeCopy.className = "item";
+            ev.target.after(nodeCopy);
+            nodeCopy.innerHTML = innerHTML;
+            append_label(nodeCopy, return_isvideo, count_id);
+            document.getElementById("hidden_list").style.display = "none";
+        }
+
+    }
+
+    function dragover_handler(ev) {
+        console.log("dragOver");
+        ev.preventDefault();
+    }
+
+
+    //플레이리스트와 파일리스트 구분 완료.
+    function test() {
+        let test = document.getElementsByClassName("text");
+        console.log(test);
+        for(let i=0; i<test.length; i++){
+            console.log(test[i].innerHTML);
+            if(test[i].innerHTML.startsWith("관호")){
+                console.log("None");
+                break;
+            }
+        }
+        console.log("hi")
+    }
+</script>
+
+
+</html>
+

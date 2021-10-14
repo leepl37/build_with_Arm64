@@ -1,0 +1,43 @@
+
+.bottom_table {
+    border: 1px solid black;
+    width: 30%;
+    float:left;
+}
+
+.bottom_table th  {
+    border: 1px solid black;
+}
+
+
+#bottom_table_file {
+    border: 1px solid black;
+    width: 70%;
+}
+
+#bottom_table_file th {
+    border: 1px solid black;
+}
+
+#playlist_info_with_ticker {
+    border: 1px solid black;
+    width: 100%;
+}
+
+#playlist_info_with_ticker th {
+    border: 1px solid black;
+}
+
+ #info_about_playlist_name {
+     display: none;
+     width: 70%;
+ }
+
+ #playlist_files_table {
+     border: 1px solid black;
+     width: 100%;
+ }
+
+#playlist_files_table th{
+    border: 1px solid black;
+}

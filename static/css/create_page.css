@@ -1,0 +1,48 @@
+
+
+#footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+    background-color: white;
+}
+
+#footer table {
+    margin: 0 auto;
+}
+
+#footer form {
+    width: 100%;
+    padding: 0.1em;
+}
+#footer form table tr {
+    width: 100%;
+    text-align: justify;
+}
+#footer form table th {
+    alignment: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 150px;
+    text-align: center;
+    font-size: 18px;
+}
+
+#m_create_table {
+    /*border: 1px solid black;*/
+    /*border-collapse: collapse;*/
+    /*width: 100%;*/
+}
+
+#m_create_table th td{
+    /*border: 1px solid black;*/
+    /*width: 100%;*/
+}
+
+#create_form {
+    width: 100%;
+    padding: 0.1em;
+}

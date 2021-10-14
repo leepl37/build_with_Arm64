@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>: :ITRO SIGNAGE: :</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Tony Lee" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <!-- user-scalable 을 사용하지 않는 디바이스를 위해, maximun-scale/minimum-scale 설정을 하는 것입니다-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- CSS Reset(1), 아이콘 폰트, 웹페이지 사용폰트, main.css -->
+    <link rel="stylesheet" href="assets/static/css/create_page.css" />
+
+</head>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="assets/static/js/main.js"></script>
+<body>
+
+<script>
+
+    function fnMoveUpTR(el){
+        let file_list_index = document.getElementsByClassName("file_list_index");
+        let length = file_list_index.length;
+
+                var $tr = $(el).parent().parent();  // 클릭한 버튼이 속한 tr 요소
+                $tr.prev().before($tr);              // 현재 tr 의 이전 tr 앞에 선택한 tr 넣기
+    }
+
+    //TR 아래로 이동
+    function fnMoveDownTR(el){
+        var $tr = $(el).parent().parent(); // 클릭한 버튼이 속한 tr 요소
+        $tr.next().after($tr);             // 현재 tr 의 다음 tr 뒤에 선택한 tr 넣기
+    }
+
+
+</script>
+
+<div class="">
+    <img src="assets/static/img/BrandMark_top.png" style="margin-left:25%; width: 50%; margin-top: 3%;">
+</div>
+
+<div style="width: 100%;">
+    <form id="add_and_edit_form" name="edit_form" method="post" action="/create_add_edit">
+        <table id="m_create_table">
+<!--            style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;-->
+            <tr>
+                <th style="text-align: left;">플레이 리스트 이름</th>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="text" name="playlist_name" value="{{playlist_name}}">
+                    </label>
+                    <input type="hidden" name="checked_file">
+                    <input type="hidden" name="form_type">
+                </td>
+            </tr>
+            <tr>
+                <th style="text-align: left;">
+                    <label style="display: inline-block;">
+                        <input id="all_checked_add" onchange="all_check('add')" name="checked" value="true" type="checkbox" style="display: block;">
+                        <input id="all_checked_edit" onchange="all_check('edit')" name="checked" value="true" type="checkbox" style="display: none;">
+                    </label>
+                    등록할 파일을 선택해주세요.
+                </th>
+            </tr>
+
+            <tr>
+                <td>
+                    <table id="all_file_table_from_edit">
+                    {% for file in files %}
+                    {% if file %}
+                    <tr>
+                        <td style="">
+                                <label id="selected_file_check" style="display: inline-block; width: 65%; text-overflow: ellipsis; white-space: nowrap; max-width: 57%;">
+                                    <input class="add_form_files" name="selected_file" value="{{file}}" type="checkbox">
+                                    {{ file }}
+                                </label>
+                                <label style="display: inline-block; width: 30%;">
+                                    <input type="button" onclick=plus("{{'add'~file}}") value='+'/>
+                                    <input type="text" value='5' id="{{'add'~file }}" name="count" style="width: 20%;">
+                                    <input type="button" onclick=minus("{{'add'~file}}") value='-'/>
+                                </label>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <table id="file_in_playlist_table_from_edit"  style="display: none;">
+                        {% for file in playlist %}
+                        {% if file %}
+                        <tr class="file_list_index">
+                            <td style="">
+                                <label style="display: inline-block; width: 65%; text-overflow: ellipsis; white-space: nowrap; max-width: 57%;">
+                                    <input class="edit_form_files" name="selected_file" value="{{file.filename}}" type="checkbox">
+                                    {{ file.filename }}
+                                </label>
+                                <label  style="display: inline-block; width: 30%;">
+                                    <input type="button" onclick=plus('{{loop.index}}') value='+'/>
+                                    <input type="text" value={{file.duration}} id='{{loop.index}}' name="count" style="width: 20%;">
+                                    <input type="button" onclick=minus('{{loop.index}}') value='-'/>
+                                </label>
+                            </td>
+
+                            <td>
+                                <input type="button" onclick="fnMoveUpTR(this); return false;" value=&#x25B2 />
+                                <input type="button" onclick="fnMoveDownTR(this); return false;" value=&#x25BC />
+                            </td>
+
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<footer id="footer">
+
+    <form id="add_file_to_playlist_form" style="display: block;">
+        <table>
+            <tr>
+                <th onclick="save('add_form_files')">저장</th>
+                <th onclick="cancel()">취소</th>
+                <th onclick="order_edit()">순서변경</th>
+            </tr>
+        </table>
+    </form>
+
+    <form id="edit_file_for_playlist_form" style="display: none;">
+        <table>
+            <tr>
+                <th onclick="save('edit_form_files')">저장</th>
+                <th onclick="before_to()">이전</th>
+            </tr>
+        </table>
+    </form>
+</footer>
+
+
+
+</body>
+</html>

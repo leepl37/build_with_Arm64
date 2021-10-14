@@ -1,0 +1,558 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop Element | CodingNepal</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <!-- user-scalable 을 사용하지 않는 디바이스를 위해, maximun-scale/minimum-scale 설정을 하는 것입니다-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- CSS Reset(1), 아이콘 폰트, 웹페이지 사용폰트, main.css -->
+    <!--    <link rel="stylesheet" href="assets/static/css/main.css" />-->
+    <!--    <link rel="stylesheet" href="assets/static/css/create_page.css" />-->
+    <link rel="stylesheet" href="assets/static/css/drag_and_drop.css" />
+</head>
+<style>
+
+    @keyframes blink-effect {
+        50% {
+            background: #d3d3d3;
+            opacity: 0;
+        }
+    }
+
+
+    * {
+        box-sizing: border-box;
+    }
+
+    #footer{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 0;
+        text-align: center;
+        background-color: white;
+    }
+
+    #footer table {
+        margin: 0 auto;
+    }
+
+    #footer form {
+        width: 100%;
+        padding: 0.1em;
+    }
+    #footer form table tr {
+        width: 100%;
+        text-align: justify;
+    }
+    #footer form table th {
+        alignment: center;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 150px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    @media all and (min-width:1025px) {
+        body{
+            margin: auto 600px;
+        }
+    }
+
+    @media all and (min-width:1025px) {
+        #footer{
+            padding-left: 600px;
+            padding-right: 600px;
+        }
+    }
+    .file_name_vertical {
+        vertical-align: super;
+    }
+
+    .item{
+        padding-left: 10px;
+        width: 100%;
+        line-height: 42px;
+        font-size: 16.5px;
+        border: none;
+        border-bottom: 1px solid #d3d3d3;
+        height: 42px;
+        vertical-align: super;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        border-collapse: collapse;
+        -webkit-user-drag:element;
+    }
+    .add_item {
+
+        width: 100%;
+        line-height: 42px;
+        font-size: 16.5px;
+        border: none;
+        border-bottom: 1px solid #d3d3d3;
+        height: 42px;
+        vertical-align: super;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        border-collapse: collapse;
+        -webkit-user-drag:element;
+    }
+
+    .item02{
+        padding-left: 10px;
+        width: 100%;
+        line-height: 42px;
+        font-size: 16.5px;
+        vertical-align: super;
+        border:none;
+        border-bottom: 1px solid #d3d3d3;
+        height: 42px;
+        -webkit-user-drag:element;
+    }
+    .outline{
+        /*border: 1px solid black;*/
+        /*border-radius: 5%;*/
+    }
+    .count_label {
+        position:relative;
+        top:10px;
+    }
+    .count_div {
+        width: 25%;
+        height: 15px;
+        line-height: 15px;
+        display: inline-block;
+        text-align: right;
+        float: right;
+        margin-right: 5%;
+        -webkit-appearance:none;
+        -webkit-border-radius:0;
+
+    }
+    .count_input{
+        text-align: center;
+        border: none;
+        width: 20%;
+        -webkit-appearance:none;
+        -webkit-border-radius:0;
+    }
+
+    .count_button {
+        font-size: 20px;
+        width: 25px;
+        -webkit-appearance:none;
+        -webkit-border-radius:0;
+        padding: 0;
+    }
+    .name_tag {
+        text-align: left;
+        position:relative;
+        top:11px;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #a9a9a9; }
+
+    .playlist_name_input {
+        width: 100%;
+        height: 30px;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        /*border-radius: 10px;*/
+        background: none;
+        font-size: 20px;
+    }
+
+    .name_tag_div {
+        margin: 0 auto;
+        background: aliceblue;
+        font-size: 20px;
+        border-radius: 10px;
+        height: 50px;
+        text-align: left;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+</style>
+
+
+
+<div class="">
+    <img src="assets/static/img/BrandMark_top.png" style="margin-left:25%; width: 50%; margin-top: 1.5%;">
+</div>
+<br>
+
+
+<body style="padding: 1px;overflow: hidden;">
+
+
+<form id="playlist_form" action="/create_playlist" method="post" style="margin:0;">
+    <input type="hidden" name="playlist" value="">
+    <input type="hidden" name="durationlist" value="">
+    <input type="hidden" name="playlist_name" value="">
+</form>
+
+<!--<div style="height: 81%; width: 96%; margin: 0 auto; border-radius: 10px; border: 1px solid #d3d3d3;">-->
+<div style="height: 37%; width: 100%; margin: 0 auto; border-radius: 10px; border: 1px solid black;">
+    <div class="name_tag_div">
+        <label class="name_tag" style="font-size: 20px; letter-spacing: 1px;">
+            <input type="text" class="playlist_name_input" id="playlist_name_from_input" placeholder="제목을 입력하세요.">
+        </label>
+    </div>
+    <div class="outline" id="outline" style="height: 74%; margin: 0 auto; overflow-y: scroll; padding: 5px 0 0 5px;"  >
+        <div class="item" style="height: 100%; display: none; -webkit-user-drag:element;" id="hidden_list"  ondrop="drop_handler(event);" ondragover="dragover_handler(event);" ondragenter="dragenter_handler(event);" ondragleave="dragleave_handler(event);">
+            플레이리스트가 비어있습니다.
+        </div>
+
+                <div class="add_item" style="height: 16.6666666%; display: block; -webkit-user-drag:element;" id="add_item_div"  ondrop="drop_handler(event);" ondragover="dragover_handler(event);" ondragenter="dragenter_handler(event);" ondragleave="dragleave_handler(event);">
+                </div>
+
+    </div>
+    <br>
+</div>
+
+<div style="height: 39%; width: 100%; margin: 0 auto; border-radius: 10px; border: 1px solid black;margin-top:10px;">
+    <div class="name_tag_div">
+        <label class="name_tag" style="font-size: 20px; letter-spacing: 1px;">파일목록</label>
+    </div>
+
+    <div class="filezone" style="height: 74%;overflow-y: scroll; margin: 0 auto; padding: 5px 0 0 5px;" ondragend="dragend_handler(event);" ondrop="drop_handler(event);" ondragover="dragover_handler(event);" ondragenter="dragenter_handler(event);" ondragleave="dragleave_handler(event);">
+        {% for file in files %}
+        <div class="item02" draggable="true" id='file{{loop.index}}:{{file.filename}}' ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);" ondrop="drop_handler(event);" ondragover="dragover_handler(event);" ondragenter="dragenter_handler(event);" ondragleave="dragleave_handler(event);" >
+            {{ file.fake_name}}
+            <input type="hidden" id='file{{loop.index}}:{{file.filename}}check' value="{{file.type}}">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+
+<footer id="footer" >
+    <form id="play_and_stop_status_footer" method="post" action="/playlist_status" name="footer_form" style="display: block;">
+        <table style="width: 100%;">
+            <tr style="height: 60px;vertical-align: middle;">
+                <th onclick="get_list_of_playlist()" id="play_or_stop_name_tag" style="border-radius: 10px;"><img src="assets/static/img/play_32px.png"><span style="vertical-align: super;margin-left: 10px;">저장</span></th>
+                <th style="width: 2px;border: none;"></th>
+                <th onclick="window.history.back()" style="border-radius: 10px;"><img src="assets/static/img/remove_32px.png"><span style="vertical-align: super;margin-left: 10px;">취소</span></th>
+            </tr>
+        </table>
+    </form>
+</footer>
+
+
+<script>
+    let item02s = document.getElementsByClassName("item02");
+    let last_length = item02s.length-1;
+    item02s[last_length].style.borderBottom = "none";
+
+
+    let digit = document.getElementsByClassName("item").length;
+    let hidden_list = document.getElementById("hidden_list");
+    let number = digit-1;
+    console.log(number);
+    if(number==0) {
+        document.getElementById("hidden_list").style.display = "block";
+        hidden_list.style.height = "100%";
+        document.getElementById("add_item_div").style.display = "none";
+    }else{
+        document.getElementById("hidden_list").style.display = "none";
+        document.getElementById("add_item_div").style.display = "block";
+    }
+
+
+
+
+
+    function get_list_of_playlist() {
+        let file_name_list = "";
+        let duration_list = "";
+        let value = document.getElementById("playlist_name_from_input").value;
+        if (!value) {
+            alert("재생목록의 제목을 입력해주세요.");
+        } else {
+            let file_name = "";
+            let duration = "";
+            let items = document.getElementsByClassName("item");
+            for (let i = 1; i < items.length; i++) {
+                let childNodes = items[i].childNodes;
+                console.log("items[i]" + items[i].id)
+                file_name = items[i].id.split(':')[1];
+                file_name = file_name + "|";
+                console.log("file_name:" + file_name);
+                duration = "f" + "|";
+                for (let k = 0; k < childNodes.length; k++) {
+                    if (childNodes[k].nodeName.startsWith("DIV")) {
+                        let childNodes1 = childNodes[k].childNodes;
+                        for (let f = 0; f < childNodes1.length; f++) {
+                            if (childNodes1[f].nodeName.startsWith("LABEL")) {
+                                let childNodes2 = childNodes1[f].childNodes;
+                                for (let e = 0; e < childNodes2.length; e++) {
+                                    if (childNodes2[e].nodeName.startsWith("INPUT")) {
+                                        if (childNodes2[e].value.startsWith("+") || childNodes2[e].value.startsWith("-")) {
+                                        } else {
+                                            duration = childNodes2[e].value + "|";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                file_name_list += file_name;
+                console.log("file_name_list:" + file_name_list);
+                duration_list += duration;
+                console.log("duration_list:" + duration_list);
+            }
+            let form = document.getElementById("playlist_form");
+            form.playlist.value = file_name_list;
+            form.durationlist.value = duration_list;
+            form.playlist_name.value = value;
+            let check = confirm("저장하시겠습니까?");
+            if (check) {
+                form.submit()
+            } else {
+
+            }
+        }
+    }
+
+    function plus(id){
+        let file = document.getElementById(id);
+        file.value = parseInt(file.value) + 1;
+    }
+    function minus(id){
+        let file = document.getElementById(id);
+        if(file.value==0){
+
+        }else{
+            file.value = parseInt(file.value) - 1;
+        }
+
+    }
+
+    function is_video(id) {
+        let check = document.getElementById(id+"check");
+        return check.value
+    }
+
+    function append_label(nodeCopy, bool, count_id) {
+        if(bool.startsWith("false")) {
+            let newDiv = document.createElement("div");
+            newDiv.className = "count_div";
+            // newDiv.style.float = "right";
+            let newlabel = document.createElement("label");
+            newlabel.className = "count_label";
+            let input_1 = document.createElement("input");
+            input_1.onclick = function () {
+                plus(count_id)
+            };
+            input_1.setAttribute('type', 'button');
+            input_1.setAttribute('value', '+');
+            input_1.className = "count_button"
+            let input_2 = document.createElement("input");
+            input_2.setAttribute('type', 'text');
+            input_2.setAttribute('value', '5');
+            input_2.className = "count_input";
+            input_2.readOnly = true;
+            input_2.id = count_id;
+            input_2.oninput ="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+            input_2.maxLength = 3;
+            input_2.min = "0";
+            let input_3 = document.createElement("input");
+            input_3.onclick = function () {
+                minus(count_id)
+            };
+            input_3.setAttribute('type', 'button');
+            input_3.setAttribute('value', '-');
+            input_3.className = "count_button"
+            newlabel.appendChild(input_1);
+            newlabel.appendChild(input_2);
+            newlabel.appendChild(input_3);
+            newDiv.appendChild(newlabel)
+            nodeCopy.appendChild(newDiv);
+        }
+    }
+
+    function dragenter_handler(ev) {
+        let id = ev.dataTransfer.getData("text");
+        console.log("take")
+        if (ev.target.id.startsWith("play")) {
+            ev.target.style.background = "#d3d3d3";
+            ev.target.style.opacity = "0.7";
+        }
+
+        if (id.startsWith("play")&&ev.target.id.startsWith("file")) {
+            document.getElementsByClassName("filezone")[0].style.background = "#d3d3d3";
+            document.getElementsByClassName("filezone")[0].style.opacity = "0.7";
+        }
+        if (id.startsWith("play")&&ev.target.className.startsWith("filezone")) {
+            document.getElementsByClassName("filezone")[0].style.background = "#d3d3d3";
+            document.getElementsByClassName("filezone")[0].style.opacity = "0.7";
+        }
+
+        if(ev.target.id.startsWith("add_item_div")){
+            document.getElementById("add_item_div").style.background = "#d3d3d3";
+            document.getElementById("add_item_div").style.opacity = "0.7";
+            console.log("hello");
+
+        }
+        if (ev.target.id.startsWith("hidden_list")) {
+            ev.target.style.background = "#d3d3d3";
+            ev.target.style.opacity = "0.7";
+        }
+    }
+
+    function dragleave_handler(ev){
+        // if (ev.target.id.startsWith("play")) {
+        ev.target.style.background = "";
+        ev.target.style.opacity = "";
+        // }
+        // if (ev.target.id.startsWith("add_item_div")) {
+        ev.target.style.background = "";
+        ev.target.style.opacity = "";
+        // }
+        document.getElementById("hidden_list").style.background = "";
+        document.getElementById("hidden_list").style.opacity = "";
+        if(ev.target.id.startsWith("add_item_div")){
+            document.getElementById("add_item_div").style.background = "";
+            document.getElementById("add_item_div").style.opacity = "";
+        }
+    }
+
+
+    function dragstart_handler(ev) {
+        ev.target.style.color = "red";
+        ev.target.style.background = "white";
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.effectAllowed = "move";
+        //ev.target.style.border = "none";
+    }
+
+    function dragend_handler(ev) {
+        ev.target.style.color = "black";
+        ev.target.style.background = "";
+        ev.dataTransfer.clearData();
+    }
+
+
+    function drop_handler(ev) {
+
+        document.getElementsByClassName("filezone")[0].style.background = "";
+        document.getElementsByClassName("filezone")[0].style.opacity = "";
+        // ev.target.style.color = "black";
+        ev.target.style.background = "";
+        ev.target.style.opacity = "";
+        let items = document.getElementsByClassName("item");
+        let lastdigit = items.length;
+
+        digit = document.getElementsByClassName("item").length;
+        ev.preventDefault();
+        let id = ev.dataTransfer.getData("text");
+        document.getElementById(id).style.color = "black";
+        document.getElementById(id).style.borderBottom = "none";
+        document.getElementById(id).style.borderBottom = "1px solid #d3d3d3";
+        let innerHTML = document.getElementById(id).innerHTML;
+
+
+
+        //add
+        if (id.startsWith("file")&&ev.target.id.startsWith("play")) {
+            let return_isvideo = is_video(id);
+            let nodeCopy = document.getElementById(id).cloneNode(true);
+            let name = id.split(':');
+
+            let new_id = "play" + lastdigit +':'+ name[1];
+            let count_id = "duration" + lastdigit +':'+ name[1];
+            // let span_id = lastdigit + ':' + name[1];
+            nodeCopy.id = new_id;
+            console.log("id:" + nodeCopy.id)
+            nodeCopy.className = "item";
+            ev.target.after(nodeCopy);
+            nodeCopy.innerHTML = innerHTML;
+            append_label(nodeCopy, return_isvideo, count_id);
+            let element = document.getElementById(new_id);
+            element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+            console.log("element" + element);
+            element.style.animation = "blink-effect 1s";
+
+
+
+        }
+        //edit
+        if (id.startsWith("play")&&ev.target.id.startsWith("play")) {
+            ev.target.after(document.getElementById(id));
+            let element = document.getElementById(id);
+            element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+            console.log("element" + element);
+            element.style.animation = "blink-effect 1s";
+        }
+        //delete
+        if (id.startsWith("play")&&ev.target.id.startsWith("file")) {
+
+            document.getElementById(id).remove();
+            let digit = document.getElementsByClassName("item").length;
+
+            if(digit==1){
+                document.getElementById("hidden_list").style.display = "block";
+                document.getElementById("add_item_div").style.display = "none";
+            }else{
+                document.getElementById("add_item_div").style.display = "block";
+                document.getElementById("hidden_list").style.display = "none";
+            }
+        }
+        if (id.startsWith("file")&&ev.target.id.startsWith("hidden_list")) {
+            let return_isvideo = is_video(id);
+            let nodeCopy = document.getElementById(id).cloneNode(true);
+            let name = id.split(':');
+            let items = document.getElementsByClassName("item");
+            let lastdigit = items.length;
+            let new_id = "play" + lastdigit +':'+ name[1];
+            let count_id = "duration" + lastdigit +':'+ name[1];
+            nodeCopy.id = new_id;
+            nodeCopy.className = "item";
+            ev.target.after(nodeCopy);
+            nodeCopy.innerHTML = innerHTML;
+            append_label(nodeCopy, return_isvideo, count_id);
+            document.getElementById("hidden_list").style.display = "none";
+            document.getElementById("add_item_div").style.display = "block";
+        }
+        if(id.startsWith("file")&&ev.target.id.startsWith("add_item_div")){
+            let return_isvideo = is_video(id);
+            let nodeCopy = document.getElementById(id).cloneNode(true);
+            let name = id.split(':');
+            let items = document.getElementsByClassName("item");
+            let lastdigit = items.length;
+            let new_id = "play" + lastdigit +':'+ name[1];
+            let count_id = "duration" + lastdigit +':'+ name[1];
+            nodeCopy.id = new_id;
+            nodeCopy.className = "item";
+            ev.target.before(nodeCopy);
+            nodeCopy.innerHTML = innerHTML;
+            append_label(nodeCopy, return_isvideo, count_id);
+            document.getElementById("hidden_list").style.display = "none";
+            document.getElementById("add_item_div").style.display = "block";
+            let element = document.getElementById(new_id);
+            element.scrollIntoView({behavior: "smooth", block: "center", ne: "nearest"});
+            console.log("element" + element);
+            element.style.animation = "blink-effect 1s";
+        }
+    }
+
+    function dragover_handler(ev) {
+        ev.preventDefault();
+    }
+
+
+    //플레이리스트와 파일리스트 구분 완료.
+
+</script>
+
+
+</html>

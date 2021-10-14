@@ -1,0 +1,11 @@
+build 시 target 을 Android 버젼으로 빌드하여 Android 기기 내부에서 실행되게 함.
+
+*사용 툴/언어 
+Intelli J/Rust
+
+*파일 업로드 시 awmp 라이브러리 사용.
+
+*빌드
+cargo build --target x86_64-unknown-linux-musl (For Android)
+
+

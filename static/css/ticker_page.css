@@ -1,0 +1,43 @@
+
+#check1{
+	right: 30px;
+}
+#check2{
+	right: 30px;
+}
+#check3{
+	right: 30px;
+}
+
+@media all and (min-width:1025px) {
+    body{
+        margin: auto 600px;
+    }
+	#check1{
+		right: 630px;
+	}
+	#check2{
+		right: 630px;
+	}
+	#check3{
+		right: 630px;
+	}
+}
+
+
+#m_create_table {
+    /*border: 1px solid black;*/
+    /*border-collapse: collapse;*/
+    /*width: 100%;*/
+}
+
+#m_create_table th td{
+    /*border: 1px solid black;*/
+    /*width: 100%;*/
+}
+
+#create_form {
+    width: 100%;
+    padding: 0.1em;
+}
+

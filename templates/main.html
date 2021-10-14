@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>::아이트로 Signage 관리자::</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Tony Lee" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/static/css/bottom.css" />
+    <link rel="stylesheet" href="assets/static/css/controller.css" />
+
+
+</head>
+
+<form id="file_upload_form" method="POST" action="/upload" enctype="multipart/form-data">
+    <input id="file_name_column" multiple="multiple" type="file" name="file" onchange="check_file_selected();" style="display:none"><br>
+    <input type="submit" value="파일업로드" style="display:none">
+</form>
+
+
+<script>
+
+    function check_file_selected() {
+        let t = document.getElementById("file_name_column").files.length
+        if(t >= 1){
+            document.getElementById("file_upload_form").submit()
+        }else{
+        }
+    }
+    function file_upload_new_browser(){
+        document.getElementById("file_name_column").click();
+    }
+
+    function add_file(){
+        file_upload_new_browser();
+    }
+
+
+
+</script>
+
+<div class="inner_no">
+    <div class="head-container_no">
+        <div class="head-home_n" ><img style="width: 200px;height: auto;" src="assets/static/img/BrandMark_top.png"></div>
+        <div class="head-blog_a" >
+            <button data-Type="btn_a"><a href = "searchCarInfo">재생목록관리</a></button>
+            <button data-Type="btn_a" onclick="file_upload_new_browser()">파일업로드</button>
+            <button data-Type="btn_a"><a href="/m_usage_history">그룹만들기</a></button>
+            <button data-Type="btn_a"><a href = "regSearch">재생하기</a></button>
+            <button data-Type="btn_a"><a href="/logout">로그아웃</a></button>
+            <!--                    <button data-Type="btn_a"><a href="/m_userInfo_checking">정보수정</a></button>-->
+        </div>
+    </div>
+
+</div>
+<body>
+
+<br>
+<div class="inner_no">
+    <form id="create_playlist" method = POST action="/make_playlist">
+        <input type="hidden" name="name">
+        <input type="hidden" value="플레이리스트만들기">
+    </form>
+    <table class="bottom_table" >
+        <tr>
+            <th>플레이리스트</th>
+            <th><button onclick="add_playlist()">추가</button></th>
+        </tr>
+            {% if playlists %}
+                {% for playlistinfo in playlists.data %}
+                <tr>
+                    <td><button onclick="selected_playlist(this.value)" value="{{playlistinfo.name}}">{{ playlistinfo.name }}</button></td>
+                        {% for assets in playlistinfo.assets %}
+                    <td><input type="hidden" class="{{playlistinfo.name}}" value="{{assets.filename}}"/></td>
+                        {% endfor %}
+                </tr>
+                {% endfor %}
+            {% endif %}
+    </table>
+
+    <table id="bottom_table_file">
+        <tr>
+            <th style="width: 80%">파일목록</th>
+            <th style="width: 20%"><button onclick="add_file()">파일업로드</button></th>
+        </tr>
+
+                <form name="asset_delete_form" method="post" action="/asset_delete_permanent">
+                {% if files %}
+                {% for f in files.data.files %}
+                {% if f %}
+        <tr>
+            <td>
+                <a href="http://172.30.1.45:8000/media/{{f}}" download="지구보호에헴!!">{{f}}</a><input type="button" onclick="asset_delete_button(this.name)" name="{{f}}" value="삭제">
+            </td>
+        </tr>
+                {% endif %}
+                {% endfor %}
+                    <input type="hidden" name="asset_name" value="">
+                </form>
+                {% endif %}
+    </table>
+
+<div id="info_about_playlist_name">
+    <form id="adjust_ticker_setting" method="post" action="/ticker_adjust" onsubmit="return ticker_form_submit()">
+        <table id="playlist_info_with_ticker">
+            <tr>
+                <th id="ticker_table_name"></th>
+            </tr>
+
+                <input type="hidden" name="playlist_name" value="">
+                <input type="hidden" name="checked" value="">
+                <tr>
+                    <td>
+                        <input type="checkbox" id="check_ticker_should_be_show" name="check" value="true">
+                        <label for="check_ticker_should_be_show">Ticker 숨기기</label><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ticker 속도
+                        <select name="ticker_speed" id="ticker_speed">
+                            <option value="1">Slow</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Full</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>폰트사이즈<input type="text" maxlength="2" pattern="([1-90-9]{2})" name="fontSize"></td>
+                </tr>
+                <tr>
+                    <td>문구<textarea name="ticker_text" rows="3" cols="11"></textarea></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit"  name="" value="전송">
+                    </td>
+                </tr>
+        </table>
+    </form>
+    <form id="playlist_files_form">
+        <table id="playlist_files_table">
+
+        </table>
+    </form>
+</div>
+
+</div>
+</body>
+</html>
+
+<script>
+    function asset_delete_button(asset_name) {
+        let assetDeleteForm = document.asset_delete_form;
+        assetDeleteForm.asset_name.value = asset_name;
+        assetDeleteForm.submit();
+    }
+
+    function add_playlist() {
+        let list_name = prompt("생성할 플레이 리스트 이름을 입력해주세요.");
+        if(list_name.length > 0){
+        let playlist_form = document.getElementById("create_playlist");
+        playlist_form.name.value = list_name;
+        playlist_form.submit();
+        }else{
+            alert("최소 길이는 1자 입니다.")
+        }
+    }
+
+    function selected_playlist(name){
+        let file_table = document.getElementById("bottom_table_file");
+        file_table.style.display = "none";
+
+        let ticker_table = document.getElementById("info_about_playlist_name");
+        let ticker_adjust_table = document.getElementById("adjust_ticker_setting");
+        document.getElementById("ticker_table_name").innerText = name;
+        if(ticker_table.style.display == "none"){
+            ticker_table.style.display = "inline-block";
+
+            let playlist_table = document.getElementById("playlist_files_table");
+            let tr = document.createElement("tr");
+            let th = document.createElement("th");
+            th.style.width = "100%"
+            th.innerText = name;
+            playlist_table.appendChild(tr);
+            playlist_table.appendChild(th);
+
+            let playlist = document.getElementsByClassName(name);
+            for(let n in playlist){
+                if(playlist[n].value){
+                    let tr = document.createElement("tr");
+                    playlist_table.appendChild(tr);
+
+                    let td_img = document.createElement("td");
+                    playlist_table.appendChild(td_img)
+
+                    let input = document.createElement("input");
+                    input.value = playlist[n].value
+                    td_img.appendChild(input);
+                }
+            }
+
+        }else{
+            let playlist_table = document.getElementById("playlist_files_table");
+            playlist_table.innerText = "";
+            ticker_table.style.display = "none";
+            file_table.style.display = "inline-block";
+        }
+    }
+
+    function ticker_form_submit(){
+        let form = document.getElementById("adjust_ticker_setting");
+        let table_name = document.getElementById("ticker_table_name").innerText;
+        form.playlist_name.value = table_name;
+        form.checked.value = form.check.checked;
+        return true;
+    }
+
+</script>

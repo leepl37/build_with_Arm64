@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>: :ITRO SIGNAGE: :</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Tony Lee" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <!-- user-scalable 을 사용하지 않는 디바이스를 위해, maximun-scale/minimum-scale 설정을 하는 것입니다-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- CSS Reset(1), 아이콘 폰트, 웹페이지 사용폰트, main.css -->
+    <link rel="stylesheet" href="assets/static/css/nomalize.css" />
+    <link rel="stylesheet" href="assets/static/css/main.css" />
+<body>
+
+</head>
+<!--    <script src="assets/static/js/main.js"></script>-->
+<script src="assets/static/js/main.js"></script>
+<style>
+    @media all and (min-width:1025px) {
+        body{
+            margin: auto 600px;
+        }
+        .loadingBox .processmessage{
+            left: 46.5%;
+        }
+    }
+
+    @media all and (max-width:1024px){
+        .loadingBox .processmessage{
+            width:100%;
+            text-align:center;
+        }
+    }
+
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #a9a9a9; }
+
+    .table_td_file_name{
+        display:inline-block;
+        width:200px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        margin-left: 10px;"
+    }
+
+    .table_td_playlist_name{
+        display:inline-block;
+        width:290px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        margin-left: 10px;"
+    }
+
+    .loadingBox .dim {position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,.7);}
+    .loadingBox .circle {position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); width:40px; height:40px; border:10px solid #fff; border-top:10px solid red; border-radius:50em; transition:all .2s;
+        animation-name:spinCircle, loading;
+        animation-duration:.8s;
+        animation-iteration-count:infinite;
+        animation-timing-function:linear;
+    }
+    .loadingBox .processmessage {
+        z-index: 1000;
+        display: block;
+        position: fixed;
+        top: 53%;
+        font-size: 1.4rem;
+        color: #fff;
+        font-weight: bold;
+    }
+    @keyframes spinCircle {
+        from {
+            transform:translate(-50%, -50%) rotate(0);
+        }
+        to {
+            transform:translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    @keyframes loading {
+        0% {
+            filter: blur(0);
+            opacity: 1;
+        }
+        100% {
+            filter: blur(5px);
+            opacity: .2;
+        }
+    }
+
+
+
+</style>
+<div id="outer_div">
+
+
+<div class="loadingBox" style="display: none;">
+    <div class="dim" style="z-index: 999"></div>
+    <div class="circle" style="z-index: 1000"></div>
+    <div class="processmessage" id="processmessage">처리중입니다...</div>
+
+</div>
+<div id="page-container">
+    <div id="content-wrap" >
+
+        <div id="header_fix">
+
+            <img src="assets/static/img/BrandMark_top.png" style="margin-left:25%; width: 50%; margin-top: 3%;">
+            <form style="width: 100%; padding: 0.1em; padding-top: 1em;padding-bottom: 0.25em;">
+                <table id="m_main_status_table" style="width: 100%; height: 100px;border-radius: 10px;border-spacing: inherit; border-collapse: inherit;">
+                    <tr style="background: whitesmoke;">
+                        <th style="border-left: 0px;border-top: 0px;border-top-left-radius: 10px;">연결<br>상태</th>
+                        <th style="border-left: 0px;border-top: 0px;">재생목록</th>
+                        <th style="border-left: 0px;border-top: 0px;">재생<br>상태</th>
+                        <th style="border-right: 0px;border-left: 0px;border-top: 0px;border-top-right-radius: 10px;">화면</th>
+                    </tr>
+                    <tr style="height: 50px;">
+                        <td style="border-right: 1px solid gray;">
+                            {% if files_success %}
+                            정상
+                            {% else %} 비정상
+                            {% endif %}
+                        </td>
+                        <td id="current_playlist_name" style="border-right: 1px solid gray;">
+                            {{status.currentPlaylist}}
+                        </td>
+                        <td style="border-right: 1px solid gray;">
+                           <span id="play_status">
+                            {% if status.playlistOn %}
+                             재생
+                            {% else %} 정지
+                            {% endif %}
+                            </span>
+                        </td>
+                        <td onclick="screenshot()">
+                            <!--                        캡쳐-->
+                            <img src="assets/static/img/camera_32px.png">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <form style="width: 100%; padding: 0.1em;padding-top: 0.25em;padding-bottom: 0.25em;">
+                <table style="border: 1px solid black; width: 100%;border-radius: 10px;background: whitesmoke;">
+                    <tr style="height: 70px;">
+                        <th onclick="click_filelist_or_playlist(this.id)" id="filelist_th"><img src="assets/static/img/filemanage_32px.png"><br>파일관리</th>
+                        <th onclick="click_filelist_or_playlist(this.id)" id="playlist_th"><img src="assets/static/img/playlist_32px.png"><br>재생목록</th>
+                    </tr>
+                </table>
+            </form>
+
+        </div>
+
+
+        <form id="filelist_form" style="padding-top: 0.25em;padding-bottom: 0.25em;">
+            <table style="width: 100%; margin: 0 auto; overflow-y: scroll; padding: 5px 0 0 5px; border-radius: 10px;border: 1px solid black;border-collapse: inherit;padding: 0.1em;">
+                <tr>
+                    <td style="border: none;">
+                        <table style="display: block;">
+                            <tbody style="display: block; border: 1px solid;">
+                            <tr style="width: 100%; height: 40px; background: aliceblue;">
+                                <td style="width:60px; border-right: 1px solid;border-left: none;border-top: none;text-align: center; padding: 5px;">No</td>
+                                <td style="width:95%; text-align:center;border-top: none;border-right: none;">파일명</td>
+                            </tr>
+                            {% for f in files %}
+                            <tr style="border-top: 1px solid;">
+                                <td onclick="file_name_list_checked(this.id)" id="{{f}}_header" style="border-right: 1px solid;border-bottom: none;border-left: none;text-align: center; padding: 5px;"><span>{{loop.index}}</span></td>
+                                <td class="file_name_list_table_td" onclick="file_name_list_checked(this.id)" style="padding-left: 10px; border: none;" id="{{f}}"><span class="table_td_file_name">{{f}}</span></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+
+        <form id="playlist_form" style="width: 100%; padding: 0.1em; padding-top: 0.25em;display: none;">
+            <table style="width: 100%;border: 1px solid black;border-radius: 10px;">
+                {% for info in playlists %}
+                <tr>
+                    <th style="height: 55px; font-size:20px; text-align: left;background: aliceblue;border-radius: 10px;" onclick="click_playlist_name(this.innerText)"><span class="table_td_playlist_name" style="margin-left: 10px;">{{info.name}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <table class="playlist_name_form"  id="{{info.name}}" style="display: block; border-radius: 10px;">
+                            <tbody style="width: 100%;display: block;border: 1px solid;border-collapse: collapse;">
+                            <tr style="width: 100%;display; inline;height: 40px; background: aliceblue;">
+                                <td style="width:50px; border-right: 1px solid; width: 40px;text-align: center; padding: 5px;">No</td>
+                                <td style="width:95%; text-align:center;">파일명</td>
+                            </tr>
+                            {% for a in info.assets %}
+                            <tr style="width: 100%;height: 40px; border-top: 1px solid;">
+                                <td style="width:50px; text-align:center; border-right: 1px solid; padding: 5px;"><span>{{loop.index}}</span></td>
+                                <td style="width:95%;" class="file_in_playlist_table_td"
+                                    onclick="file_name_list_checked(this.id)" id="{{a.filename}}"><span class="table_td_file_name" >{{a.filename}}</span></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </form>
+
+        <footer id="footer">
+            <form id="filelist_footer" style="display: block; padding:0.1em;">
+                <table style="width: 100%;">
+                    <tr style="height: 60px;vertical-align: middle;">
+                        <!--                    <th>사진촬영</th>-->
+                        <th onclick="file_upload_new_browser()" style="border-radius: 10px;"><img src="assets/static/img/upload_32px.png"><span style="vertical-align: super;margin-left: 10px;">업로드</span></th>
+                        <th style="width: 2px;border: none;"></th>
+                        <th onclick="file_delete('file_name_list_table_td')" style="border-radius: 10px;"><img src="assets/static/img/remove_32px.png"><span style="vertical-align: super;margin-left: 10px;">삭제</span></th>
+                    </tr>
+                </table>
+            </form>
+
+            <form id="playlist_footer" style="display: none;">
+                <table style="width: 100%;">
+                    <tr style="height: 60px;vertical-align: middle;">
+                        <th style="border-radius: 10px;"><a href="/create"><img src="assets/static/img/listcreate_32px.png"><span style="vertical-align: super;margin-left: 10px;">작성</span></a></th>
+                        <th style="width: 2px;border: none;"></th>
+                        <!--                    <th onclick="test()">수정</th>-->
+                        <th onclick="file_delete('playlist_delete')" style="border-radius: 10px;"><img src="assets/static/img/remove_32px.png"><span style="vertical-align: super;margin-left: 10px;">삭제</span></th>
+                    </tr>
+                </table>
+            </form>
+
+
+            <form id="play_and_stop_status_footer" method="post" action="/playlist_status" name="footer_form" style="display: none;">
+                <input type="hidden" id="clicked_playlist_name" name="playlist_name" value="">
+                <input type="hidden" name="status" value="">
+                <table style="width: 100%;">
+                    <tr style="height: 60px;vertical-align: middle;">
+                        <th onclick="play_stop_edit_delete(this.innerText)" id="play_or_stop_name_tag" style="border-radius: 10px;"><img src="assets/static/img/play_32px.png"><span style="vertical-align: super;margin-left: 10px;">재생</span></th>
+                        <th style="width: 2px;border: none;"></th>
+                        <th onclick="play_stop_edit_delete(this.innerText)" style="border-radius: 10px;"><img src="assets/static/img/playlist_32px.png"><span style="vertical-align: super;margin-left: 10px;">수정</span></th>
+                        <th style="width: 2px;border: none;"></th>
+                        <th onclick="play_stop_edit_delete(this.innerText)" style="border-radius: 10px;"><img src="assets/static/img/text_32px.png"><span style="vertical-align: super;margin-left: 10px;">문구</span></th>
+                        <th style="width: 2px;border: none;"></th>
+                        <th onclick="play_stop_edit_delete(this.innerText)" style="border-radius: 10px;"><img src="assets/static/img/remove_32px.png"><span style="vertical-align: super;margin-left: 10px;">삭제</span></th>
+                    </tr>
+                </table>
+            </form>
+
+        </footer>
+    </div>
+</div>
+
+
+<iframe name="iframe_upload" style="display:none;"></iframe>
+
+<div id="page-bottom">
+    <form id="file_upload_form" method="POST" action="/upload" enctype="multipart/form-data" target="iframe_upload" >
+        <input id="file_name_column" multiple="multiple" type="file" name="file" onchange="check_file_selected();" style="display:none"><br>
+        <input type="submit" value="파일업로드" style="display:none">
+    </form>
+
+    <form id="file_delete_form" method="POST" action="/delete">
+        <input type="hidden" name="file_name" value="">
+        <input type="submit" value="파일삭제" style="display:none">
+    </form>
+
+    <form id="file_name_in_playlist_delete_form" method="POST" action="/delete">
+        <input type="hidden" name="file_name" value="">
+        <input type="submit" value="파일삭제" style="display:none">
+    </form>
+</div>
+</div>
+</body>
+</html>
